@@ -19,12 +19,16 @@ spring:
     # JPA 설정
     jpa:
         hibernate:
-            ddl-auto: create
+            ddl-auto: update
         show_sql: true        # 쿼리 로그 출력
         properties:
             hibernate:
                 format_sql: true      # 쿼리 로그 포맷 (정렬)
-                dialect: org.hibernate.dialect.H2Dialect
+        defer-datasource-initialization: true
+
+    sql:
+      init:
+          data-locations: classpath:import.sql
 
 
 logging:
