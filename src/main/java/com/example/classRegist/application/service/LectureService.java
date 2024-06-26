@@ -16,7 +16,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,6 @@ public class LectureService {
     private final LectureRepository lectureRepo;
 
     private final ApplyRepository applyRepo;
-
 
     public LectureService(MemberRepository memberRepo, LectureRepository lectureRepo, ApplyRepository applyRepo) {
         this.memberRepo = memberRepo;
@@ -144,20 +142,6 @@ public class LectureService {
      * @return 등록되어있는 강의 목록
      */
     public List<LectureDTO> getLectureList() {
-        List<Lecture> lectures = lectureRepo.findAll(Sort.by(Sort.Direction.ASC,"applyDt" ));
-        List<LectureDTO> result = new ArrayList<>();
-        for (Lecture data :lectures ){
-            result.add(LectureDTO.builder()
-                    .lectureId(data.getLectureId())
-                    .lectureNm(data.getLectureNm())
-                    .lectureDt(data.getLectureDt())
-                    .capacity(data.getCapacity())
-                    .leftOverCnt(data.getLeftOverCnt())
-                    .applyDt(data.getApplyDt())
-                    .build()
-            );
-        }
-
-        return result;
+        return lectureRepo.findAll(Sort.by(Sort.Direction.ASC,"applyDt" )).stream().map(LectureDTO::new).collect(Collectors.toList());
     }
 }
