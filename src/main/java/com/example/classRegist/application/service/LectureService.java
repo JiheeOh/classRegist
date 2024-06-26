@@ -1,22 +1,22 @@
 package com.example.classRegist.application.service;
 
-import com.example.classRegist.domain.entity.Apply;
-import com.example.classRegist.domain.entity.ApplyPk;
-import com.example.classRegist.domain.entity.Lecture;
-import com.example.classRegist.domain.dto.LectureDTO;
-import com.example.classRegist.domain.dto.RequestDto;
 import com.example.classRegist.common.exception.DupliApplyException;
 import com.example.classRegist.common.exception.LectureNotFoundException;
 import com.example.classRegist.common.exception.MemberNotFoundException;
 import com.example.classRegist.common.exception.RegiFailException;
+import com.example.classRegist.domain.dto.LectureDTO;
+import com.example.classRegist.domain.entity.Apply;
+import com.example.classRegist.domain.entity.ApplyPk;
+import com.example.classRegist.domain.entity.Lecture;
 import com.example.classRegist.infra.repository.ApplyRepository;
 import com.example.classRegist.infra.repository.LectureRepository;
 import com.example.classRegist.infra.repository.MemberRepository;
+import com.example.classRegist.presenter.BaseRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LectureService {
@@ -38,7 +38,7 @@ public class LectureService {
      *
      * @param request : 사용자 Id, 강의 Id
      */
-    public void applyLecture(RequestDto request) {
+    public void applyLecture(BaseRequest request) {
 
         String memberId = request.getMemberId();
         String lectureId = request.getLectureId();
@@ -118,20 +118,6 @@ public class LectureService {
      * @return 등록되어있는 강의 목록
      */
     public List<LectureDTO> getLectureList() {
-        List<Lecture> lectures = lectureRepo.findAll(Sort.by(Sort.Direction.ASC,"applyDt" ));
-        List<LectureDTO> result = new ArrayList<>();
-        for (Lecture data :lectures ){
-            result.add(LectureDTO.builder()
-                    .lectureId(data.getLectureId())
-                    .lectureNm(data.getLectureNm())
-                    .lectureDt(data.getLectureDt())
-                    .capacity(data.getCapacity())
-                    .leftOverCnt(data.getLeftOverCnt())
-                    .applyDt(data.getApplyDt())
-                    .build()
-            );
-        }
-
-        return result;
+        return lectureRepo.findAll(Sort.by(Sort.Direction.ASC,"applyDt" )).stream().map(LectureDTO::new).collect(Collectors.toList());
     }
 }
