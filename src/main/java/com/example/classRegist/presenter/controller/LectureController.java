@@ -1,7 +1,7 @@
 package com.example.classRegist.presenter.controller;
 
 import com.example.classRegist.domain.dto.LectureDTO;
-import com.example.classRegist.domain.dto.RequestDto;
+import com.example.classRegist.presenter.BaseRequest;
 import com.example.classRegist.application.service.LectureService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ public class LectureController {
 
     // 특강 신청
     @PostMapping("/apply")
-    public ResponseEntity<Object> lectureApply(@RequestBody RequestDto request) {
+    public ResponseEntity<Object> lectureApply(@RequestBody BaseRequest request) {
         lectureService.applyLecture(request);
         return ResponseEntity.ok().body("Lecture applied");
     }
