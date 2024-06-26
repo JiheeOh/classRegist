@@ -1,9 +1,12 @@
 package com.example.classRegist.presenter.controller;
 
+import com.example.classRegist.dto.LectureDTO;
 import com.example.classRegist.dto.RequestDto;
 import com.example.classRegist.application.service.LectureService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/lectures")
@@ -27,5 +30,11 @@ public class LectureController {
                                                 , @PathVariable String lectureId) {
         boolean result = lectureService.isApplied(memberId,lectureId);
         return ResponseEntity.ok().body(result);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<Object> getLectureList(){
+        List<LectureDTO> lectures = lectureService.getLectureList();
+        return ResponseEntity.ok().body(lectures);
     }
 }

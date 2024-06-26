@@ -3,6 +3,7 @@ package com.example.classRegist.application.service;
 import com.example.classRegist.domain.entity.Apply;
 import com.example.classRegist.domain.entity.ApplyPk;
 import com.example.classRegist.domain.entity.Lecture;
+import com.example.classRegist.dto.LectureDTO;
 import com.example.classRegist.dto.RequestDto;
 import com.example.classRegist.common.exception.DupliApplyException;
 import com.example.classRegist.common.exception.LectureNotFoundException;
@@ -11,7 +12,11 @@ import com.example.classRegist.common.exception.RegiFailException;
 import com.example.classRegist.infra.repository.ApplyRepository;
 import com.example.classRegist.infra.repository.LectureRepository;
 import com.example.classRegist.infra.repository.MemberRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class LectureService {
@@ -106,5 +111,25 @@ public class LectureService {
      */
     public boolean isApplied(String memberId, String lectureId) {
         return applyRepo.existsById(new ApplyPk(memberId,lectureId));
+    }
+
+    /**
+     * 강의 목록 조회
+     * @return 등록되어있는 강의 목록
+     */
+    public List<LectureDTO> getLectureList() {
+        List<Lecture> lectures = lectureRepo.findAll(Sort.by(Sort.Direction.ASC,"applyDt" ));
+        List<LectureDTO> result = new ArrayList<>();
+        for (Lecture data :lectures ){
+            result.add(new LectureDTO(
+                            data.getLectureId()
+                            ,data.getLectureNm()
+                            ,data.getLectureDt()
+                            ,data.getCapacity()
+                            ,data.getLeftOverCnt()
+                            ,data.getApplyDt()));
+        }
+
+        return result;
     }
 }

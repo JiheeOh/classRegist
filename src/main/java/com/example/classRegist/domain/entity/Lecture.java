@@ -34,7 +34,7 @@ public class Lecture extends BaseEntity{
     private Long leftOverCnt;
 
     @Column(name="APPLY_DT")
-    private LocalDateTime applydt;
+    private LocalDateTime applyDt;
 
 
 }
