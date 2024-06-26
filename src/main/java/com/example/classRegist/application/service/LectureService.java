@@ -3,8 +3,8 @@ package com.example.classRegist.application.service;
 import com.example.classRegist.domain.entity.Apply;
 import com.example.classRegist.domain.entity.ApplyPk;
 import com.example.classRegist.domain.entity.Lecture;
-import com.example.classRegist.dto.LectureDTO;
-import com.example.classRegist.dto.RequestDto;
+import com.example.classRegist.domain.dto.LectureDTO;
+import com.example.classRegist.domain.dto.RequestDto;
 import com.example.classRegist.common.exception.DupliApplyException;
 import com.example.classRegist.common.exception.LectureNotFoundException;
 import com.example.classRegist.common.exception.MemberNotFoundException;
@@ -44,7 +44,7 @@ public class LectureService {
         String lectureId = request.getLectureId();
 
         // 등록할 수 있는 유효한 사용자/강의인지 확인
-        checkMember(memberId, lectureId);
+        checkValidate(memberId, lectureId);
         Lecture lecture = getAvailableLecture(lectureId);
 
         // 등록 진행
@@ -59,12 +59,12 @@ public class LectureService {
     /**
      * 수업을 등록할 수 있는 사용자인지 확인
      * - 미등록 사용자 ID일 경우 : MemberNotFoundException
-     *
+     * - 중복 수업 신청 시 : DupliApplyException
      * @param memberId  : 찾으려는 사용자 ID
-     * @param lectureId
+     * @param lectureId : 등록하려는 강의 ID
      * @return Member : 등록된 사용자
      */
-    private boolean checkMember(String memberId, String lectureId) {
+    private boolean checkValidate(String memberId, String lectureId) {
         memberRepo.findById(memberId).orElseThrow(() -> new MemberNotFoundException("You are not member", 500));
         if (applyRepo.existsById(new ApplyPk(memberId, lectureId))) {
             throw new DupliApplyException(String.format("You already registered same class : %s", lectureId), 500);
