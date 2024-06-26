@@ -1,4 +1,4 @@
-package com.example.classRegist.dto;
+package com.example.classRegist.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
