@@ -2,7 +2,7 @@ package com.example.classRegist.service;
 
 import com.example.classRegist.application.service.LectureService;
 import com.example.classRegist.common.exception.MemberNotFoundException;
-import com.example.classRegist.domain.dto.RequestDto;
+import com.example.classRegist.presenter.BaseRequest;
 import com.example.classRegist.infra.repository.ApplyRepository;
 import com.example.classRegist.infra.repository.LectureRepository;
 import com.example.classRegist.infra.repository.MemberRepository;
@@ -39,13 +39,13 @@ class LectureServiceTest {
         // given
         String memberId = "testId";
         String letureId = "lecture";
-        RequestDto requestDto = new RequestDto(memberId,letureId);
+        BaseRequest baseRequest = new BaseRequest(memberId,letureId);
 
         // when : LectureService의 checkMember() return null로 설정
         when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
 
         // Then : 미등록 사용자 신청 시도 시 MemberNotFoundException
-        assertThrows(MemberNotFoundException.class, ()->lectureService.applyLecture(requestDto));
+        assertThrows(MemberNotFoundException.class, ()->lectureService.applyLecture(baseRequest));
 
     }
 
