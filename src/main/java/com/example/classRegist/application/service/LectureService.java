@@ -65,7 +65,8 @@ public class LectureService {
      */
     private boolean checkValidate(String memberId, String lectureId) {
         try {
-            memberRepo.findById(memberId).orElseThrow(() -> new MemberNotFoundException("You are not member", 500));
+            memberRepo.findById(memberId)
+                    .orElseThrow(() -> new MemberNotFoundException("You are not member", 500));
             if (applyRepo.existsById(new ApplyPk(memberId, lectureId))) {
                 throw new DupliApplyException(String.format("You already registered same class : %s", lectureId), 500);
             }
@@ -73,8 +74,8 @@ public class LectureService {
             System.out.println(e);
             return false;
         }
+        return false;
 
-        return true;
     }
 
     /**
@@ -113,7 +114,8 @@ public class LectureService {
      */
     private Lecture getAvailableLecture(String lectureId) {
         // 해당 강의 search
-        Lecture lecture = lectureRepo.findById(lectureId).orElseThrow(() -> new LectureNotFoundException(String.format("There are no lecture like %s", lectureId), 500));
+        Lecture lecture = lectureRepo.findById(lectureId)
+                            .orElseThrow(() -> new LectureNotFoundException(String.format("There are no lecture like %s", lectureId), 500));
 
         // 해당 강의의 정원이 꽉 찼을 경우 등록 실패
         if (lecture.getLeftOverCnt() <= 0) {
@@ -146,10 +148,10 @@ public class LectureService {
 
     /**
      * 강의 목록 조회
-     *
      * @return 등록되어있는 강의 목록
      */
     public List<LectureDTO> getLectureList() {
-        return lectureRepo.findAll(Sort.by(Sort.Direction.ASC, "applyDt")).stream().map(LectureDTO::new).collect(Collectors.toList());
+        return lectureRepo.findAll(Sort.by(Sort.Direction.ASC,"applyDt" ))
+                            .stream().map(LectureDTO::new).collect(Collectors.toList());
     }
 }
