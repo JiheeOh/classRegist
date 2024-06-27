@@ -44,13 +44,14 @@ public class LectureService {
         String lectureId = request.getLectureId();
 
         // 등록할 수 있는 유효한 사용자/강의인지 확인
-        checkValidate(memberId, lectureId);
-
+        if (!checkValidate(memberId, lectureId)) {
+            throw new RuntimeException("VALIDATE FAILED");
+        }
         // 등록 시도
-        tryApply(memberId,lectureId);
+        tryApply(memberId, lectureId);
+
+
     }
-
-
 
 
     /**
@@ -63,10 +64,16 @@ public class LectureService {
      * @return Member : 등록된 사용자
      */
     private boolean checkValidate(String memberId, String lectureId) {
-        memberRepo.findById(memberId).orElseThrow(() -> new MemberNotFoundException("You are not member", 500));
-        if (applyRepo.existsById(new ApplyPk(memberId, lectureId))) {
-            throw new DupliApplyException(String.format("You already registered same class : %s", lectureId), 500);
+        try {
+            memberRepo.findById(memberId).orElseThrow(() -> new MemberNotFoundException("You are not member", 500));
+            if (applyRepo.existsById(new ApplyPk(memberId, lectureId))) {
+                throw new DupliApplyException(String.format("You already registered same class : %s", lectureId), 500);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
         }
+
         return true;
     }
 
@@ -76,9 +83,9 @@ public class LectureService {
      * 1. 등록할 수 있는 lecture인지 확인
      * 2. 등록 테이블에 데이터 적재
      * 3. 잔여인원 감소시키기
-     *  위 3가지 step을 한 transaction에서 관리
+     * 위 3가지 step을 한 transaction에서 관리
      *
-     * @param memberId : 사용자 Id
+     * @param memberId  : 사용자 Id
      * @param lectureId : 강의 Id
      */
     @Transactional
@@ -139,9 +146,10 @@ public class LectureService {
 
     /**
      * 강의 목록 조회
+     *
      * @return 등록되어있는 강의 목록
      */
     public List<LectureDTO> getLectureList() {
-        return lectureRepo.findAll(Sort.by(Sort.Direction.ASC,"applyDt" )).stream().map(LectureDTO::new).collect(Collectors.toList());
+        return lectureRepo.findAll(Sort.by(Sort.Direction.ASC, "applyDt")).stream().map(LectureDTO::new).collect(Collectors.toList());
     }
 }
