@@ -1,4 +1,4 @@
-package com.example.classRegist.service;
+package com.example.classRegist.application.service;
 
 import com.example.classRegist.application.service.LectureService;
 import com.example.classRegist.common.exception.MemberNotFoundException;
